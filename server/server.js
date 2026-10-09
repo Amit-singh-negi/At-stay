@@ -39,7 +39,7 @@ app.use('/api/', limiter);
 // CORS configuration
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['https://atstay.in', 'http://localhost:5173'];
+  : ['https://atstay.in', 'http://localhost:5173',"https://at-stay-8s51.vercel.app"];
 
 app.use(cors({
   origin: (origin, callback) => {
