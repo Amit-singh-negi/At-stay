@@ -42,7 +42,7 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS
   : [
       'https://atstay.in',
       'http://localhost:5173',
-      'https://at-stay-9xwa.vercel.app',
+      'https://at-stay-hz8t.vercel.app',
     ]);
 
 app.use(cors({
@@ -57,6 +57,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   credentials: true,
 }));
+
 
 // Middleware to parse JSON
 app.use(express.json({ limit: '10mb' }));
