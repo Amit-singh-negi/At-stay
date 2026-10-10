@@ -37,9 +37,13 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // CORS configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['https://atstay.in', 'http://localhost:5173',"https://at-stay-8s51.vercel.app"];
+const allowedOrigins = (process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
+  : [
+      'https://atstay.in',
+      'http://localhost:5173',
+      'https://at-stay-9xwa.vercel.app',
+    ]);
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -50,7 +54,7 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   credentials: true,
 }));
 
@@ -123,3 +127,5 @@ app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
+
+export default app;
