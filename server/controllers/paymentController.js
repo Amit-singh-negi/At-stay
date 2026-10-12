@@ -5,9 +5,9 @@ import { getAuth, clerkClient } from "@clerk/express";
 
 // Cashfree API base URL
 const getCashfreeBaseUrl = () => {
-  return process.env.CASHFREE_ENVIRONMENT?.toUpperCase() === "PRODUCTION"
-    ? "https://api.cashfree.com/pg"
-    : "https://sandbox.cashfree.com/pg";
+  return process.env.CASHFREE_ENVIRONMENT === "PRODUCTION" || process.env.CASHFREE_ENVIRONMENT === "production"
+    ? "https://sandbox.cashfree.com/pg"
+    : "https://api.cashfree.com/pg";
 };
 
 // Helper function to make Cashfree API calls
