@@ -5,9 +5,10 @@ import { getAuth, clerkClient } from "@clerk/express";
 
 // Cashfree API base URL
 const getCashfreeBaseUrl = () => {
-  return process.env.CASHFREE_ENVIRONMENT === "PRODUCTION" || process.env.CASHFREE_ENVIRONMENT === "production"
-    ? "https://sandbox.cashfree.com/pg"
-    : "https://api.cashfree.com/pg";
+  const env = process.env.CASHFREE_ENVIRONMENT?.trim().toLowerCase();
+  return env === "production"
+    ? "https://api.cashfree.com/pg"
+    : "https://sandbox.cashfree.com/pg";
 };
 
 // Helper function to make Cashfree API calls
@@ -126,10 +127,17 @@ export const createCashfreeOrder = async (req, res) => {
       });
     }
 
-    const { origin } = req.headers;
-    const frontendUrl = origin || process.env.FRONTEND_URL || "http://localhost:5173";
-    const backendUrl = process.env.BACKEND_URL || origin || "http://localhost:5001";
+    const frontendUrl = (
+  process.env.FRONTEND_URL || "https://atstay.in"
+).trim().replace(/\/+$/, "");
 
+if (!frontendUrl.startsWith("https://")) {
+  throw new Error("FRONTEND_URL must use HTTPS");
+}
+
+const backendUrl = (
+  process.env.BACKEND_URL || "https://at-stay-t89k.vercel.app"
+).trim().replace(/\/+$/, "");
     // Generate unique order ID
     const orderId = `ORDER_${booking._id}_${Date.now()}`;
 
@@ -178,11 +186,11 @@ export const createCashfreeOrder = async (req, res) => {
         customer_email: req.user?.email || "",
         customer_phone: customerPhone,
       },
-      order_meta: {
-        return_url: `${frontendUrl}/payment/callback?bookingId=${booking._id}`,
-        notify_url: `${backendUrl}/api/payments/webhook`,
-        payment_methods: "cc,dc,upi,nb",
-      },
+    order_meta: {
+  return_url: `${frontendUrl}/payment/callback?bookingId=${booking._id}&order_id={order_id}`,
+  notify_url: `${backendUrl}/api/payments/webhook`,
+  payment_methods: "cc,dc,upi,nb",
+},
     };
 
     // Log request in development
@@ -235,9 +243,10 @@ export const createCashfreeOrder = async (req, res) => {
 
       // Generate payment link - Cashfree format
       // According to Cashfree docs, checkout URL should be: https://sandbox.cashfree.com/pg/checkout/{payment_session_id}
-      const baseDomain = process.env.CASHFREE_ENVIRONMENT === "SANDBOX" || process.env.CASHFREE_ENVIRONMENT === "sandbox"
-        ? "sandbox.cashfree.com"
-        : "www.cashfree.com";
+      const baseDomain =
+  process.env.CASHFREE_ENVIRONMENT?.trim().toLowerCase() === "production"
+    ? "api.cashfree.com"
+    : "sandbox.cashfree.com";
       
       // Ensure payment_session_id is properly formatted
       let cleanSessionId = String(paymentSessionId).trim();

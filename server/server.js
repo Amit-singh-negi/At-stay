@@ -44,11 +44,16 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS
       'http://localhost:5173',
       'https://at-stay-hz8t.vercel.app',
     ]);
+ 
+    console.log(allowedOrigins);
+    
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin || allowedOrigins.includes(origin)) {
+      console.log("allowed");
+      
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));

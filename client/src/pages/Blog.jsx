@@ -93,7 +93,6 @@ const Blog = () => {
       </article>
     );
   }
-
   // List view
   return (
     <div className="text-gray-800">
